@@ -3,13 +3,30 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
-    <!-- Main ListView     -->
+
     <TextView
         android:id="@+id/header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/start"
         />
+    <EditText
+        android:id="@+id/apikey"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:hint="@string/apiedittext"
+        android:onClick="apikeyClicked"
+        >
+    </EditText>
+    <Button
+        android:id="@+id/saveapikey"
+        android:layout_width="60dp"
+        android:layout_height="35dp"
+        android:text="@string/saveapikey"
+        android:onClick="saveapikeyClicked"
+        android:clickable="true" />
+    <!-- Main ListView     -->
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"

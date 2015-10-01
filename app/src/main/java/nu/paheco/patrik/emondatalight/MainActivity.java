@@ -7,6 +7,9 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -54,7 +57,7 @@ public class MainActivity extends ListActivity {
         }
         Log.i("EmonLog", "Result from getData: " + result);
 
-        Log.i ("Emonlog","Parse result from server");
+        Log.i("Emonlog", "Parse result from server");
         if (result != null) {
             try {
                 JSONArray jsonArr = new JSONArray(result);
@@ -89,6 +92,8 @@ public class MainActivity extends ListActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+
         }
     }
     private String getDate(long time) {
@@ -96,5 +101,16 @@ public class MainActivity extends ListActivity {
         cal.setTimeInMillis(time * 1000);
         String date = DateFormat.format("yyyy-MM-dd HH:mm", cal).toString();
         return date;
+    }
+
+    public void apikeyClicked(View view){
+        //if(view.getId()==R.id.apikey);
+        TextView apikey = (TextView) findViewById(R.id.apikey );
+        apikey.setText("");
+    }
+    public void saveapikeyClicked(View view){
+        TextView header = (TextView) findViewById(R.id.header);
+        header.setText("Not working yet");
+
     }
 }
