@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,10 +20,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends ListActivity {
 
@@ -47,7 +52,10 @@ public class MainActivity extends ListActivity {
 
         // Init list
         dataList = new ArrayList<HashMap<String, String>>();
-        ListView lv = getListView();
+        //ListView lv = getListView();
+
+        String[] from = new String[] {"name", "rtime"};
+        int[] lines = new int[] { R.id.name, R.id.rtime };
 
         String result="";
         try {
@@ -76,17 +84,50 @@ public class MainActivity extends ListActivity {
                     // Convert timestamp
                     long tlong = Long.parseLong(time);
                     String realtime = getDate(tlong);
-                    Log.i("Timelong: ",realtime);
+                    //Log.i("Timelong: ",realtime);
                     datatime = realtime;
-                    item.put(TAG_NAME, name + ": " + value);
+
+                    // How old are the values
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    try {
+                        Date mDate = sdf.parse(realtime);
+                        long timeInMilliseconds = mDate.getTime();
+                        //System.out.println("Date in milli :: " + timeInMilliseconds);
+                        long timenow= System.currentTimeMillis();
+                        long timediff = timenow - timeInMilliseconds;
+
+                        long days = TimeUnit.MILLISECONDS.toDays(timediff);
+                        timediff -= TimeUnit.DAYS.toMillis(days);
+                        long hours = TimeUnit.MILLISECONDS.toHours(timediff);
+                        timediff -= TimeUnit.HOURS.toMillis(hours);
+                        long minutes = TimeUnit.MILLISECONDS.toMinutes(timediff);
+                        timediff -= TimeUnit.MINUTES.toMillis(minutes);
+                        long seconds = TimeUnit.MILLISECONDS.toSeconds(timediff);
+
+                        Log.i("Timelong: ",realtime);
+                        Log.i ("Age: ", days + ":" + hours + ":" + minutes);
+
+                        // Add to list
+                        item.put(TAG_NAME, name + ": " + value);
+                        item.put("rtime", "Retrieved @ " + realtime + "(" + days + " days, " + hours + " hours," + minutes + " minutes ago)");
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                     dataList.add(item);
 
-                    // Update header
-                    header.setText("Emoncms data, retrived @ " + datatime);
+                    // Update header with current time
+                    Calendar cal = Calendar.getInstance();
+                    String date = ""+cal.get(Calendar.DATE)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.YEAR);
+                    String timenow = ""+cal.get(Calendar.HOUR_OF_DAY)+":"+cal.get(Calendar.MINUTE);
+                    header.setText("Emoncms data, retreived @ " + date + " " + timenow);
 
+                    //ListAdapter adapter = new SimpleAdapter(
+                    //        MainActivity.this, dataList,
+                    //        R.layout.list_item, new String[]{TAG_NAME}, new int[]{R.id.name});
                     ListAdapter adapter = new SimpleAdapter(
                             MainActivity.this, dataList,
-                            R.layout.list_item, new String[]{TAG_NAME}, new int[]{R.id.name});
+                            R.layout.list_item, from, lines);
                     setListAdapter(adapter);
                 }
             } catch (JSONException e) {
