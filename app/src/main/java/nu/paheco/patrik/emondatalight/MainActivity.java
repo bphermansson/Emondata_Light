@@ -51,13 +51,28 @@ public class MainActivity extends ListActivity {
         // Find gui elements
         TextView header = (TextView) findViewById(R.id.header);
         EditText apikey=(EditText)findViewById(R.id.apikey);
-
+        Button btnSave = (Button) findViewById(R.id.saveapikey);
+        Button btnfindapikey = (Button) findViewById(R.id.emoncms);
         // Get stored api key
         String stored_apikey = getPreferences(MODE_PRIVATE).getString("apikey", "");
+        boolean corrApi=true;
 
+        Integer apiLength = stored_apikey.length();
+        if (apiLength!=32) {
+            // wrong length on api key
+            header.setText("Wrong api key");
+            corrApi=false;
+        }
+        else {
+            // A correct key was found, hide api textbox and save-button
+            apikey.setVisibility(View.GONE);
+            btnSave.setVisibility(getListView().GONE);
+            btnfindapikey.setVisibility(getListView().GONE);
+        }
         // Print to edittext
         apikey.setText(stored_apikey);
 
+        if (corrApi==true) {
         // URL to get Emoncms JSON data
         String url = "http://emoncms.org/feed/list.json?apikey=" + stored_apikey;
 
@@ -105,7 +120,7 @@ public class MainActivity extends ListActivity {
                         Date mDate = sdf.parse(realtime);
                         long timeInMilliseconds = mDate.getTime();
                         //System.out.println("Date in milli :: " + timeInMilliseconds);
-                        long timenow= System.currentTimeMillis();
+                        long timenow = System.currentTimeMillis();
                         long timediff = timenow - timeInMilliseconds;
 
                         long days = TimeUnit.MILLISECONDS.toDays(timediff);
@@ -116,8 +131,8 @@ public class MainActivity extends ListActivity {
                         timediff -= TimeUnit.MINUTES.toMillis(minutes);
                         long seconds = TimeUnit.MILLISECONDS.toSeconds(timediff);
 
-                        Log.i("Timelong: ",realtime);
-                        Log.i ("Age: ", days + ":" + hours + ":" + minutes);
+                        Log.i("Timelong: ", realtime);
+                        Log.i("Age: ", days + ":" + hours + ":" + minutes);
 
                         // Add to list
                         item.put(TAG_NAME, name + ": " + value);
@@ -130,8 +145,8 @@ public class MainActivity extends ListActivity {
 
                     // Update header with current time
                     Calendar cal = Calendar.getInstance();
-                    String date = ""+cal.get(Calendar.DATE)+"-"+(cal.get(Calendar.MONTH)+1)+"-"+cal.get(Calendar.YEAR);
-                    String timenow = ""+cal.get(Calendar.HOUR_OF_DAY)+":"+cal.get(Calendar.MINUTE);
+                    String date = "" + cal.get(Calendar.DATE) + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.YEAR);
+                    String timenow = "" + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE);
                     header.setText("Emoncms data, retreived @ " + date + " " + timenow);
 
                     //ListAdapter adapter = new SimpleAdapter(
@@ -146,7 +161,7 @@ public class MainActivity extends ListActivity {
                 e.printStackTrace();
             }
 
-
+        }
         }
     }
     private String getDate(long time) {
@@ -165,11 +180,28 @@ public class MainActivity extends ListActivity {
         // Find gui elements
         TextView header = (TextView) findViewById(R.id.header);
         EditText apikey=(EditText)findViewById(R.id.apikey);
+        Button btnSave = (Button) findViewById(R.id.saveapikey);
+        Button btnEmoncms = (Button) findViewById(R.id.emoncms);
+
         // Save value
         getPreferences(MODE_PRIVATE).edit().putString("apikey",apikey.getText().toString()).commit();
-        header.setText("Api key saved");
-    }
 
+        // Hide gui elements
+        apikey.setVisibility(View.GONE);
+        btnSave.setVisibility(getListView().GONE);
+        header.setText("Api key saved");
+        btnEmoncms.setVisibility(getListView().GONE);
+    }
+    public void editapikeyClicked(View view){
+        // Find gui elements
+        TextView header = (TextView) findViewById(R.id.header);
+        EditText apikey=(EditText)findViewById(R.id.apikey);
+        Button btnSave = (Button) findViewById(R.id.saveapikey);
+        // Show elements
+        apikey.setVisibility(View.VISIBLE);
+        btnSave.setVisibility(getListView().VISIBLE);
+        header.setText("Edit api key");
+    }
     public void emoncmsClicked(View view){
         String emonurl = "http://emoncms.org/user/login";
         Log.i("Open url", emonurl);
