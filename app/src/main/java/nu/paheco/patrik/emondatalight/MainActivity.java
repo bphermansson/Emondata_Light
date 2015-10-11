@@ -1,6 +1,8 @@
 package nu.paheco.patrik.emondatalight;
 
 import android.app.ListActivity;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -31,9 +33,6 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends ListActivity {
 
-    // URL to get Emoncms JSON data
-    private static String url = "http://emoncms.org/feed/list.json?apikey=8133697b1b562f52689bd680b330cb4d";
-
     // JSON Node names
     private static final String TAG_ID = "id";
     private static final String TAG_NAME = "name";
@@ -48,7 +47,19 @@ public class MainActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Find gui elements
         TextView header = (TextView) findViewById(R.id.header);
+        EditText apikey=(EditText)findViewById(R.id.apikey);
+
+        // Get stored api key
+        String stored_apikey = getPreferences(MODE_PRIVATE).getString("apikey", "");
+
+        // Print to edittext
+        apikey.setText(stored_apikey);
+
+        // URL to get Emoncms JSON data
+        String url = "http://emoncms.org/feed/list.json?apikey=" + stored_apikey;
 
         // Init list
         dataList = new ArrayList<HashMap<String, String>>();
@@ -59,7 +70,8 @@ public class MainActivity extends ListActivity {
 
         String result="";
         try {
-            result = new getData().execute("http://emoncms.org/feed/list.json?apikey=8133697b1b562f52689bd680b330cb4d").get();
+            result = new getData().execute(url).get();
+            //result = new getData().execute("http://emoncms.org/feed/list.json?apikey=" + apikey).get();
         } catch (Exception e) {
             Log.i("EmonLog", "Error in getData");
         }
@@ -109,7 +121,7 @@ public class MainActivity extends ListActivity {
 
                         // Add to list
                         item.put(TAG_NAME, name + ": " + value);
-                        item.put("rtime", "Retrieved @ " + realtime + "(" + days + " days, " + hours + " hours," + minutes + " minutes ago)");
+                        item.put("rtime", "Retrieved @ " + realtime + "(" + days + " days, " + hours + " hours, " + minutes + " minutes ago)");
 
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -150,8 +162,19 @@ public class MainActivity extends ListActivity {
         apikey.setText("");
     }
     public void saveapikeyClicked(View view){
+        // Find gui elements
         TextView header = (TextView) findViewById(R.id.header);
-        header.setText("Not working yet");
+        EditText apikey=(EditText)findViewById(R.id.apikey);
+        // Save value
+        getPreferences(MODE_PRIVATE).edit().putString("apikey",apikey.getText().toString()).commit();
+        header.setText("Api key saved");
+    }
 
+    public void emoncmsClicked(View view){
+        String emonurl = "http://emoncms.org/user/login";
+        Log.i("Open url", emonurl);
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(emonurl));
+        startActivity(i);
     }
 }

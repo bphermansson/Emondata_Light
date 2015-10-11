@@ -26,6 +26,13 @@
         android:text="@string/saveapikey"
         android:onClick="saveapikeyClicked"
         android:clickable="true" />
+    <Button
+        android:id="@+id/emoncms"
+        android:layout_width="150dp"
+        android:layout_height="35dp"
+        android:text="Find api key"
+        android:onClick="emoncmsClicked"
+        android:clickable="true" />
     <!-- Main ListView     -->
     <ListView
         android:id="@android:id/list"
