@@ -1,10 +1,12 @@
 <resources>
-    <string name="app_name">Emondata Light</string>
+    <string name="app_name">Emondata</string>
 
     <string name="start">Welcome to Emondata Light!</string>
     <string name="action_settings">Settings</string>
     <string name="apikey">Api key</string>
     <string name="apiedittext">Api key (click to edit, long-click to paste from clipboard)</string>
     <string name="saveapikey">Save</string>
+    <string name="wrongapikey">Wrong api key</string>
+    <string name="editapikey">Edit api key</string>
 
 </resources>

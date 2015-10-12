@@ -1,20 +1,16 @@
-package nu.paheco.patrik.emondatalight;
+package nu.paheco.patrik.emondata;
 
 import android.app.ListActivity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -32,7 +28,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends ListActivity {
-
+    //public class MainActivity extends AppCompatActivity {
     // JSON Node names
     private static final String TAG_ID = "id";
     private static final String TAG_NAME = "name";
@@ -48,6 +44,9 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+
         // Find gui elements
         TextView header = (TextView) findViewById(R.id.header);
         EditText apikey=(EditText)findViewById(R.id.apikey);
@@ -60,14 +59,16 @@ public class MainActivity extends ListActivity {
         Integer apiLength = stored_apikey.length();
         if (apiLength!=32) {
             // wrong length on api key
-            header.setText("Wrong api key");
+            header.setText(R.string.wrongapikey);
             corrApi=false;
         }
         else {
             // A correct key was found, hide api textbox and save-button
             apikey.setVisibility(View.GONE);
-            btnSave.setVisibility(getListView().GONE);
-            btnfindapikey.setVisibility(getListView().GONE);
+            //btnSave.setVisibility(getListView().GONE);
+            btnSave.setVisibility(View.GONE);
+            //btnfindapikey.setVisibility(getListView().GONE);
+            btnfindapikey.setVisibility(View.GONE);
         }
         // Print to edittext
         apikey.setText(stored_apikey);
@@ -119,7 +120,6 @@ public class MainActivity extends ListActivity {
                     try {
                         Date mDate = sdf.parse(realtime);
                         long timeInMilliseconds = mDate.getTime();
-                        //System.out.println("Date in milli :: " + timeInMilliseconds);
                         long timenow = System.currentTimeMillis();
                         long timediff = timenow - timeInMilliseconds;
 
@@ -149,9 +149,6 @@ public class MainActivity extends ListActivity {
                     String timenow = "" + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE);
                     header.setText("Emoncms data, retreived @ " + date + " " + timenow);
 
-                    //ListAdapter adapter = new SimpleAdapter(
-                    //        MainActivity.this, dataList,
-                    //        R.layout.list_item, new String[]{TAG_NAME}, new int[]{R.id.name});
                     ListAdapter adapter = new SimpleAdapter(
                             MainActivity.this, dataList,
                             R.layout.list_item, from, lines);
@@ -164,11 +161,21 @@ public class MainActivity extends ListActivity {
         }
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.mainmenu, menu);
+        return true;
+    }
+
     private String getDate(long time) {
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(time * 1000);
-        String date = DateFormat.format("yyyy-MM-dd HH:mm", cal).toString();
-        return date;
+        //String date = DateFormat.format("yyyy-MM-dd HH:mm", cal).toString();
+        //return date;
+        return DateFormat.format("yyyy-MM-dd HH:mm", cal).toString();
+
     }
 
     public void apikeyClicked(View view){
@@ -200,7 +207,7 @@ public class MainActivity extends ListActivity {
         // Show elements
         apikey.setVisibility(View.VISIBLE);
         btnSave.setVisibility(getListView().VISIBLE);
-        header.setText("Edit api key");
+        header.setText(R.string.editapikey);
     }
     public void emoncmsClicked(View view){
         String emonurl = "http://emoncms.org/user/login";

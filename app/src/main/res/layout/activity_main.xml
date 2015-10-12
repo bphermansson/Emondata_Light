@@ -2,11 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/header"
-        android:layout_width="fill_parent"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:text="@string/start"
         android:textSize="26dp"
@@ -21,6 +22,8 @@
         android:hint="@string/apiedittext"
         android:onClick="apikeyClicked"
         android:padding="5dp"
+        android:textSize="14dp"
+
         >
     </EditText>
     <Button
