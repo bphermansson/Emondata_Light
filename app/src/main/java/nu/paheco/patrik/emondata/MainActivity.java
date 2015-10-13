@@ -27,6 +27,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+// Todo
+// Reload data after api-key is entered
+
 public class MainActivity extends ListActivity {
     //public class MainActivity extends AppCompatActivity {
     // JSON Node names
@@ -89,11 +92,11 @@ public class MainActivity extends ListActivity {
             result = new getData().execute(url).get();
             //result = new getData().execute("http://emoncms.org/feed/list.json?apikey=" + apikey).get();
         } catch (Exception e) {
-            Log.i("EmonLog", "Error in getData");
+            //Log.i("EmonLog", "Error in getData");
         }
-        Log.i("EmonLog", "Result from getData: " + result);
+        //Log.i("EmonLog", "Result from getData: " + result);
 
-        Log.i("Emonlog", "Parse result from server");
+        //Log.i("Emonlog", "Parse result from server");
         if (result != null) {
             try {
                 JSONArray jsonArr = new JSONArray(result);
@@ -131,8 +134,8 @@ public class MainActivity extends ListActivity {
                         timediff -= TimeUnit.MINUTES.toMillis(minutes);
                         long seconds = TimeUnit.MILLISECONDS.toSeconds(timediff);
 
-                        Log.i("Timelong: ", realtime);
-                        Log.i("Age: ", days + ":" + hours + ":" + minutes);
+                        //Log.i("Timelong: ", realtime);
+                        //Log.i("Age: ", days + ":" + hours + ":" + minutes);
 
                         // Add to list
                         item.put(TAG_NAME, name + ": " + value);
@@ -211,7 +214,7 @@ public class MainActivity extends ListActivity {
     }
     public void emoncmsClicked(View view){
         String emonurl = "http://emoncms.org/user/login";
-        Log.i("Open url", emonurl);
+        //Log.i("Open url", emonurl);
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(emonurl));
         startActivity(i);

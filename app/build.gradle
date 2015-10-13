@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply from: "../artifacts.gradle"
 android {
     compileSdkVersion 23
     buildToolsVersion '23.0.1'
@@ -8,7 +8,7 @@ android {
 
 
     defaultConfig {
-        applicationId "nu.paheco.patrik.emondatalight"
+        applicationId "nu.paheco.patrik.emondata"
         minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
@@ -18,9 +18,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+
+            }
         }
     }
-}
+
 
 dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'

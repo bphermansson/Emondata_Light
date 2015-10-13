@@ -18,7 +18,7 @@ class getData extends AsyncTask<String, Void, String> {
         String datatime="";
 
         String urlstring = params[0];
-        Log.i("EmonLog", "HTTP Connecting: " + urlstring);
+        //Log.i("EmonLog", "HTTP Connecting: " + urlstring);
 
         //URL url = new URL(urlstring);
 
@@ -26,9 +26,9 @@ class getData extends AsyncTask<String, Void, String> {
         ServiceHandler sh = new ServiceHandler();
         // Making a request to url and getting response
         String jsonStr = sh.makeServiceCall(urlstring, ServiceHandler.GET);
-        Log.d("Response: ", "> " + jsonStr);
+        //Log.d("Response: ", "> " + jsonStr);
 
-        Log.w("In getData","Ok got data");
+        //Log.w("In getData","Ok got data");
         return jsonStr;
 
     }
