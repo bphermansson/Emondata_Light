@@ -46,10 +46,10 @@ public class MainActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getEmondata();
+    }
 
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-
+    public void getEmondata() {
         // Find gui elements
         TextView header = (TextView) findViewById(R.id.header);
         EditText apikey=(EditText)findViewById(R.id.apikey);
@@ -77,41 +77,36 @@ public class MainActivity extends ListActivity {
         apikey.setText(stored_apikey);
 
         if (corrApi==true) {
-        // URL to get Emoncms JSON data
-        String url = "http://emoncms.org/feed/list.json?apikey=" + stored_apikey;
+            // URL to get Emoncms JSON data
+            String url = "http://emoncms.org/feed/list.json?apikey=" + stored_apikey;
+            // Init list
+            dataList = new ArrayList<HashMap<String, String>>();
+            //ListView lv = getListView();
 
-        // Init list
-        dataList = new ArrayList<HashMap<String, String>>();
-        //ListView lv = getListView();
+            String[] from = new String[] {"name", "rtime"};
+            int[] lines = new int[] { R.id.name, R.id.rtime };
 
-        String[] from = new String[] {"name", "rtime"};
-        int[] lines = new int[] { R.id.name, R.id.rtime };
-
-        String result="";
-        try {
-            result = new getData().execute(url).get();
-            //result = new getData().execute("http://emoncms.org/feed/list.json?apikey=" + apikey).get();
-        } catch (Exception e) {
-            //Log.i("EmonLog", "Error in getData");
-        }
-        //Log.i("EmonLog", "Result from getData: " + result);
+            String result="";
+            try {
+                result = new getData().execute(url).get();
+                //result = new getData().execute("http://emoncms.org/feed/list.json?apikey=" + apikey).get();
+            } catch (Exception e) {
+                //Log.i("EmonLog", "Error in getData");
+            }
+            Log.i("EmonLog", "Result from getData: " + result);
 
         //Log.i("Emonlog", "Parse result from server");
         if (result != null) {
             try {
                 JSONArray jsonArr = new JSONArray(result);
-
                 // looping through All items
                 for (int i = 0; i < jsonArr.length(); i++) {
-
                     JSONObject c = jsonArr.getJSONObject(i);
                     String id = c.getString(TAG_ID);
                     String name = c.getString(TAG_NAME);
                     String value = c.getString(TAG_VALUE);
                     String time = c.getString(TAG_TIME);
-
                     HashMap<String, String> item = new HashMap<String, String>();
-
                     // Convert timestamp
                     long tlong = Long.parseLong(time);
                     String realtime = getDate(tlong);
@@ -120,6 +115,7 @@ public class MainActivity extends ListActivity {
 
                     // How old are the values
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
                     try {
                         Date mDate = sdf.parse(realtime);
                         long timeInMilliseconds = mDate.getTime();
@@ -160,12 +156,10 @@ public class MainActivity extends ListActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-        }
         }
     }
+    }
 
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.mainmenu, menu);
@@ -173,12 +167,13 @@ public class MainActivity extends ListActivity {
     }
 
     private String getDate(long time) {
-        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
-        cal.setTimeInMillis(time * 1000);
-        //String date = DateFormat.format("yyyy-MM-dd HH:mm", cal).toString();
-        //return date;
-        return DateFormat.format("yyyy-MM-dd HH:mm", cal).toString();
-
+        String stime = Long.toString(time);
+        //Log.i("stime: ", stime);
+        Date date = new Date(time*1000L); // *1000 is to convert seconds to milliseconds
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // the format of your date
+        String formattedDate = sdf.format(date);
+        //System.out.println(formattedDate);
+        return formattedDate.toString();
     }
 
     public void apikeyClicked(View view){
@@ -201,6 +196,9 @@ public class MainActivity extends ListActivity {
         btnSave.setVisibility(getListView().GONE);
         header.setText("Api key saved");
         btnEmoncms.setVisibility(getListView().GONE);
+
+        // Get data
+        getEmondata();
     }
     public void editapikeyClicked(View view){
         // Find gui elements

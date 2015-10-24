@@ -9,10 +9,10 @@ android {
 
     defaultConfig {
         applicationId "nu.paheco.patrik.emondata"
-        minSdkVersion 19
-        targetSdkVersion 23
+        minSdkVersion 14
+        targetSdkVersion 14
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
     }
     buildTypes {
         release {
