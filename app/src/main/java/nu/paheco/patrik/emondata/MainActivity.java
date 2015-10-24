@@ -93,7 +93,7 @@ public class MainActivity extends ListActivity {
             } catch (Exception e) {
                 //Log.i("EmonLog", "Error in getData");
             }
-            Log.i("EmonLog", "Result from getData: " + result);
+            //Log.i("EmonLog", "Result from getData: " + result);
 
         //Log.i("Emonlog", "Parse result from server");
         if (result != null) {
