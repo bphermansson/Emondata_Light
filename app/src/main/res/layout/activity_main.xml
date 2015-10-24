@@ -10,7 +10,7 @@
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:text="@string/start"
-        android:textSize="26dp"
+        android:textSize="26sp"
         android:textStyle="bold"
         android:padding="5dp"
         />
@@ -22,7 +22,7 @@
         android:hint="@string/apiedittext"
         android:onClick="apikeyClicked"
         android:padding="5dp"
-        android:textSize="14dp"
+        android:textSize="14sp"
 
         >
     </EditText>
