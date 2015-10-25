@@ -28,7 +28,7 @@
     </EditText>
     <Button
         android:id="@+id/saveapikey"
-        android:layout_width="60dp"
+        android:layout_width="80dp"
         android:layout_height="35dp"
         android:text="@string/saveapikey"
         android:onClick="saveapikeyClicked"
@@ -40,6 +40,7 @@
         android:text="Find api key"
         android:onClick="emoncmsClicked"
         android:clickable="true" />
+    <!--
     <Button
         android:id="@+id/editKey"
         android:layout_width="150dp"
@@ -47,7 +48,7 @@
         android:text="Edit api key"
         android:onClick="editapikeyClicked"
         android:clickable="true" />
-
+    -->
     <!-- Main ListView     -->
     <ListView
         android:id="@android:id/list"

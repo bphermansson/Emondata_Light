@@ -7,12 +7,17 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +33,6 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 // Todo
-// Reload data after api-key is entered
 
 public class MainActivity extends ListActivity {
     //public class MainActivity extends AppCompatActivity {
@@ -42,11 +46,42 @@ public class MainActivity extends ListActivity {
     ArrayList<HashMap<String, String>> dataList;
     String datatime;
 
+    private ListView listView = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getEmondata();
+
+        /*
+        ListView listview = getListView();
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View clickView,
+                                    int position, long id) {
+                //String country = list[position];
+                Toast.makeText(MainActivity.this,
+                        String.format("%s was chosen."),
+                        Toast.LENGTH_SHORT).show();
+                Log.i ("Clicked:", String.valueOf(position));
+            }
+        });
+        */
+
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                menuapikeyClicked();
+                return true;
+            //case R.id.help:
+            //    showHelp();
+            //    return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void getEmondata() {
@@ -55,6 +90,7 @@ public class MainActivity extends ListActivity {
         EditText apikey=(EditText)findViewById(R.id.apikey);
         Button btnSave = (Button) findViewById(R.id.saveapikey);
         Button btnfindapikey = (Button) findViewById(R.id.emoncms);
+
         // Get stored api key
         String stored_apikey = getPreferences(MODE_PRIVATE).getString("apikey", "");
         boolean corrApi=true;
@@ -97,6 +133,7 @@ public class MainActivity extends ListActivity {
 
         //Log.i("Emonlog", "Parse result from server");
         if (result != null) {
+            Integer noofitems = 0;
             try {
                 JSONArray jsonArr = new JSONArray(result);
                 // looping through All items
@@ -137,6 +174,7 @@ public class MainActivity extends ListActivity {
                         item.put(TAG_NAME, name + ": " + value);
                         item.put("rtime", "Retrieved @ " + realtime + "(" + days + " days, " + hours + " hours, " + minutes + " minutes ago)");
 
+
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -148,22 +186,37 @@ public class MainActivity extends ListActivity {
                     String timenow = "" + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE);
                     header.setText("Emoncms data, retreived @ " + date + " " + timenow);
 
+
+                    //   SimpleAdapter k=new SimpleAdapter(this,val1,R.layout.mytask,new String[]{"a","c","b"},
+                    // new int[]{R.id.View1,R.id.View2,R.id.ViewStatus})
+
+                    //ListView lv= (ListView)findViewById(R.id.list);
                     ListAdapter adapter = new SimpleAdapter(
                             MainActivity.this, dataList,
                             R.layout.list_item, from, lines);
+                    //listView.setAdapter(adapter);
                     setListAdapter(adapter);
+                    noofitems = adapter.getCount();
+
                 }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            Log.i("Number of listitems: ", String.valueOf(noofitems));
+
         }
-    }
+        }
+
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.mainmenu, menu);
-        return true;
+        //getMenuInflater().inflate(R.menu.mainmenu, menu);
+        //return true;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mainmenu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     private String getDate(long time) {
@@ -200,7 +253,22 @@ public class MainActivity extends ListActivity {
         // Get data
         getEmondata();
     }
-    public void editapikeyClicked(View view){
+    public void checkClicked(View view){
+        Log.i("Open url", "click");
+
+    }
+
+        public void editapikeyClicked(View view){
+        // Find gui elements
+        TextView header = (TextView) findViewById(R.id.header);
+        EditText apikey=(EditText)findViewById(R.id.apikey);
+        Button btnSave = (Button) findViewById(R.id.saveapikey);
+        // Show elements
+        apikey.setVisibility(View.VISIBLE);
+        btnSave.setVisibility(getListView().VISIBLE);
+        header.setText(R.string.editapikey);
+    }
+    public void menuapikeyClicked(){
         // Find gui elements
         TextView header = (TextView) findViewById(R.id.header);
         EditText apikey=(EditText)findViewById(R.id.apikey);
