@@ -54,5 +54,12 @@
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/save"
+        android:layout_width="150dp"
+        android:layout_height="35dp"
+        android:text="Save"
+        android:onClick="SaveClicked"
+        android:clickable="true" />
 
 </LinearLayout>

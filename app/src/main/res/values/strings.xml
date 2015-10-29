@@ -7,5 +7,5 @@
     <string name="saveapikey">Save</string>
     <string name="wrongapikey">Wrong api key</string>
     <string name="editapikey">Edit api key</string>
-
+    <string name="id">Id</string>
 </resources>

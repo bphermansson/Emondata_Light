@@ -47,6 +47,7 @@ public class MainActivity extends ListActivity {
     String datatime;
 
     private ListView listView = null;
+    Integer noofitems = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,8 +120,8 @@ public class MainActivity extends ListActivity {
             dataList = new ArrayList<HashMap<String, String>>();
             //ListView lv = getListView();
 
-            String[] from = new String[] {"name", "rtime"};
-            int[] lines = new int[] { R.id.name, R.id.rtime };
+            String[] from = new String[] {"name", "rtime", "id"};
+            int[] lines = new int[] { R.id.name, R.id.rtime, R.id.id };
 
             String result="";
             try {
@@ -133,7 +134,6 @@ public class MainActivity extends ListActivity {
 
         //Log.i("Emonlog", "Parse result from server");
         if (result != null) {
-            Integer noofitems = 0;
             try {
                 JSONArray jsonArr = new JSONArray(result);
                 // looping through All items
@@ -173,7 +173,7 @@ public class MainActivity extends ListActivity {
                         // Add to list
                         item.put(TAG_NAME, name + ": " + value);
                         item.put("rtime", "Retrieved @ " + realtime + "(" + days + " days, " + hours + " hours, " + minutes + " minutes ago)");
-
+                        item.put(TAG_ID, id);
 
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -198,6 +198,15 @@ public class MainActivity extends ListActivity {
                     setListAdapter(adapter);
                     noofitems = adapter.getCount();
 
+                    /*
+                    ListView list = (ListView) findViewById(R.id.list);
+                    list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Object listItem = list.getItemAtPosition(position);
+                        }
+                    });
+                    */
                 }
 
             } catch (JSONException e) {
@@ -207,9 +216,7 @@ public class MainActivity extends ListActivity {
 
         }
         }
-
     }
-
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.mainmenu, menu);
@@ -218,7 +225,6 @@ public class MainActivity extends ListActivity {
         inflater.inflate(R.menu.mainmenu, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
     private String getDate(long time) {
         String stime = Long.toString(time);
         //Log.i("stime: ", stime);
@@ -228,6 +234,19 @@ public class MainActivity extends ListActivity {
         //System.out.println(formattedDate);
         return formattedDate.toString();
     }
+    public String itemClicked() {
+        return "1";
+    }
+    public void SaveClicked(View view) {
+        for (int i = 0; i < noofitems; i++) {
+            TextView header = (TextView) findViewById(R.id.header);
+            view.findViewById(R.id.id);
+
+
+        }
+
+        }
+
 
     public void apikeyClicked(View view){
         //if(view.getId()==R.id.apikey);
@@ -254,11 +273,14 @@ public class MainActivity extends ListActivity {
         getEmondata();
     }
     public void checkClicked(View view){
-        Log.i("Open url", "click");
+        TextView textid = (TextView) findViewById(R.id.id);
+        String id = textid.getText().toString();
 
+        Log.i("Check clicked", "click");
+        Log.i("ID: ", id);
     }
 
-        public void editapikeyClicked(View view){
+    public void editapikeyClicked(View view){
         // Find gui elements
         TextView header = (TextView) findViewById(R.id.header);
         EditText apikey=(EditText)findViewById(R.id.apikey);
