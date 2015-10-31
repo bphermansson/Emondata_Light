@@ -2,8 +2,10 @@ package nu.paheco.patrik.emondata;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
@@ -12,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -30,6 +33,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 // Todo
@@ -68,6 +72,22 @@ public class MainActivity extends ListActivity {
             }
         });
         */
+        /*
+        final ListView lv = (ListView) findViewById(android.R.id.list);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Object listItem = lv.getItemAtPosition(position);
+                Log.d("Pos:", listItem.toString());
+            }
+        });*/
+
+        // Get all settings
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        Map<String, ?> prefsMap = settings.getAll();
+        for (Map.Entry<String, ?> entry: prefsMap.entrySet()) {
+            Log.d("SharedPreferences", entry.getKey() + ":" + entry.getValue().toString());
+        }
 
     }
     @Override
@@ -84,7 +104,6 @@ public class MainActivity extends ListActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
     public void getEmondata() {
         // Find gui elements
         TextView header = (TextView) findViewById(R.id.header);
@@ -136,13 +155,27 @@ public class MainActivity extends ListActivity {
         if (result != null) {
             try {
                 JSONArray jsonArr = new JSONArray(result);
+                // Settings manager
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+
                 // looping through All items
                 for (int i = 0; i < jsonArr.length(); i++) {
+                    // Get values
                     JSONObject c = jsonArr.getJSONObject(i);
                     String id = c.getString(TAG_ID);
                     String name = c.getString(TAG_NAME);
                     String value = c.getString(TAG_VALUE);
                     String time = c.getString(TAG_TIME);
+
+                    //Log.d("Id: ", id);
+                    // Is there a settings for this id?
+                    if (settings.contains(id)) {
+                        Log.d("Id setting found: ", id);
+                        String checked = settings.getString(id, "");
+                        Log.d("Value ", checked);
+
+                    }
+
                     HashMap<String, String> item = new HashMap<String, String>();
                     // Convert timestamp
                     long tlong = Long.parseLong(time);
@@ -198,15 +231,7 @@ public class MainActivity extends ListActivity {
                     setListAdapter(adapter);
                     noofitems = adapter.getCount();
 
-                    /*
-                    ListView list = (ListView) findViewById(R.id.list);
-                    list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Object listItem = list.getItemAtPosition(position);
-                        }
-                    });
-                    */
+
                 }
 
             } catch (JSONException e) {
@@ -246,8 +271,6 @@ public class MainActivity extends ListActivity {
         }
 
         }
-
-
     public void apikeyClicked(View view){
         //if(view.getId()==R.id.apikey);
         TextView apikey = (TextView) findViewById(R.id.apikey );
@@ -276,8 +299,23 @@ public class MainActivity extends ListActivity {
         TextView textid = (TextView) findViewById(R.id.id);
         String id = textid.getText().toString();
 
+        //code to check if this checkbox is checked!
+        CheckBox checkBox = (CheckBox)view;
+        String strChecked;
+        if(checkBox.isChecked()){
+            Log.i("Checked?",  "Yes!");
+            strChecked = "yes";
+        }
+        else {
+            strChecked = "no";
+        }
+
         Log.i("Check clicked", "click");
-        Log.i("ID: ", id);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(id, strChecked);
+        editor.commit();
+
     }
 
     public void editapikeyClicked(View view){
